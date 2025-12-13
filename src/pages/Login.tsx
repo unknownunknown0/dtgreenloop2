@@ -42,12 +42,26 @@ const Login = () => {
         return;
       }
 
+      // Check user role and redirect accordingly
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', data.user.id)
+        .single();
+
       toast({
         title: "Welcome back!",
         description: "Login successful",
       });
-      
-      navigate("/home");
+
+      // Redirect based on role
+      if (roleData?.role === 'admin') {
+        navigate("/admin");
+      } else if (roleData?.role === 'delivery_partner') {
+        navigate("/delivery");
+      } else {
+        navigate("/home");
+      }
     } catch (error) {
       toast({
         title: "Error",
