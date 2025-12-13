@@ -18,6 +18,8 @@ import Art from "./pages/Art";
 import NeedThings from "./pages/NeedThings";
 import Billing from "./pages/Billing";
 import NotFound from "./pages/NotFound";
+import AdminDashboard from "./pages/AdminDashboard";
+import DeliveryPartnerDashboard from "./pages/DeliveryPartnerDashboard";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +44,8 @@ const App = () => (
           <Route path="/art" element={<Art />} />
           <Route path="/need-things" element={<NeedThings />} />
           <Route path="/billing" element={<Billing />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/delivery" element={<DeliveryPartnerDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
