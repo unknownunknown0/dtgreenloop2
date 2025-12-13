@@ -50,6 +50,56 @@ export type Database = {
         }
         Relationships: []
       }
+      delivery_assignments: {
+        Row: {
+          assigned_at: string | null
+          completed_at: string | null
+          created_at: string | null
+          delivery_partner_id: string
+          id: string
+          notes: string | null
+          pickup_id: string
+          route_order: number | null
+          started_at: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_at?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          delivery_partner_id: string
+          id?: string
+          notes?: string | null
+          pickup_id: string
+          route_order?: number | null
+          started_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_at?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          delivery_partner_id?: string
+          id?: string
+          notes?: string | null
+          pickup_id?: string
+          route_order?: number | null
+          started_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_assignments_pickup_id_fkey"
+            columns: ["pickup_id"]
+            isOneToOne: false
+            referencedRelation: "pickups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       need_things: {
         Row: {
           category: string | null
@@ -165,8 +215,11 @@ export type Database = {
           address: string | null
           avatar_url: string | null
           created_at: string | null
+          current_latitude: number | null
+          current_longitude: number | null
           first_name: string | null
           id: string
+          is_available: boolean | null
           last_name: string | null
           phone: string | null
           reward_points: number | null
@@ -174,13 +227,18 @@ export type Database = {
           total_recycled_kg: number | null
           updated_at: string | null
           user_id: string
+          vehicle_number: string | null
+          vehicle_type: string | null
         }
         Insert: {
           address?: string | null
           avatar_url?: string | null
           created_at?: string | null
+          current_latitude?: number | null
+          current_longitude?: number | null
           first_name?: string | null
           id?: string
+          is_available?: boolean | null
           last_name?: string | null
           phone?: string | null
           reward_points?: number | null
@@ -188,13 +246,18 @@ export type Database = {
           total_recycled_kg?: number | null
           updated_at?: string | null
           user_id: string
+          vehicle_number?: string | null
+          vehicle_type?: string | null
         }
         Update: {
           address?: string | null
           avatar_url?: string | null
           created_at?: string | null
+          current_latitude?: number | null
+          current_longitude?: number | null
           first_name?: string | null
           id?: string
+          is_available?: boolean | null
           last_name?: string | null
           phone?: string | null
           reward_points?: number | null
@@ -202,6 +265,8 @@ export type Database = {
           total_recycled_kg?: number | null
           updated_at?: string | null
           user_id?: string
+          vehicle_number?: string | null
+          vehicle_type?: string | null
         }
         Relationships: []
       }
@@ -315,7 +380,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "delivery_partner"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -443,7 +508,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "delivery_partner"],
     },
   },
 } as const
