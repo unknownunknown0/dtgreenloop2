@@ -12,39 +12,67 @@ import {
   LogOut,
   ChevronRight,
   Award,
-  Leaf
+  Leaf,
+  Package
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import AppLayout from "@/components/layout/AppLayout";
 import { useToast } from "@/hooks/use-toast";
 
+interface ProfileData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string | null;
+  address: string | null;
+  totalRecycled: number;
+  co2Saved: number;
+  rewardPoints: number;
+  pickupCount: number;
+}
+
 const Profile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [user, setUser] = useState<{
-    email: string;
-    firstName: string;
-    lastName: string;
-  } | null>(null);
+  const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getUser = async () => {
+    const fetchProfile = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         navigate("/login");
         return;
       }
-      
-      setUser({
+
+      // Fetch profile data
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+
+      // Fetch pickup count
+      const { count: pickupCount } = await supabase
+        .from("pickups")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", session.user.id);
+
+      setProfile({
+        firstName: profileData?.first_name || session.user.user_metadata?.first_name || "",
+        lastName: profileData?.last_name || session.user.user_metadata?.last_name || "",
         email: session.user.email || "",
-        firstName: session.user.user_metadata?.first_name || "",
-        lastName: session.user.user_metadata?.last_name || "",
+        phone: profileData?.phone || null,
+        address: profileData?.address || null,
+        totalRecycled: profileData?.total_recycled_kg || 0,
+        co2Saved: profileData?.total_co2_saved_kg || 0,
+        rewardPoints: profileData?.reward_points || 0,
+        pickupCount: pickupCount || 0,
       });
       setLoading(false);
     };
 
-    getUser();
+    fetchProfile();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!session) {
@@ -66,9 +94,10 @@ const Profile = () => {
 
   const menuItems = [
     { icon: User, label: "Edit Profile", path: "/profile/edit" },
+    { icon: Package, label: "My Pickups", path: "/orders" },
+    { icon: Award, label: "Rewards", path: "/rewards" },
     { icon: Bell, label: "Notifications", path: "/notifications" },
     { icon: MapPin, label: "Saved Addresses", path: "/addresses" },
-    { icon: Award, label: "Rewards", path: "/rewards" },
     { icon: Shield, label: "Privacy & Security", path: "/privacy" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ];
@@ -109,27 +138,33 @@ const Profile = () => {
             </div>
             <div className="flex-1">
               <h2 className="text-lg font-semibold text-foreground">
-                {user?.firstName} {user?.lastName}
+                {profile?.firstName} {profile?.lastName}
               </h2>
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
                 <Mail size={14} />
-                {user?.email}
+                {profile?.email}
               </div>
+              {profile?.phone && (
+                <div className="flex items-center gap-1 text-sm text-muted-foreground mt-0.5">
+                  <Phone size={14} />
+                  {profile.phone}
+                </div>
+              )}
             </div>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-border">
             <div className="text-center">
-              <div className="text-xl font-bold text-primary">0</div>
+              <div className="text-xl font-bold text-primary">{profile?.pickupCount}</div>
               <div className="text-xs text-muted-foreground">Pickups</div>
             </div>
             <div className="text-center">
-              <div className="text-xl font-bold text-success">0 kg</div>
+              <div className="text-xl font-bold text-success">{profile?.totalRecycled} kg</div>
               <div className="text-xs text-muted-foreground">Recycled</div>
             </div>
             <div className="text-center">
-              <div className="text-xl font-bold text-warning">0</div>
+              <div className="text-xl font-bold text-warning">{profile?.rewardPoints}</div>
               <div className="text-xs text-muted-foreground">Points</div>
             </div>
           </div>
@@ -149,7 +184,10 @@ const Profile = () => {
             <div>
               <p className="text-sm font-medium text-foreground">Your Eco Impact</p>
               <p className="text-xs text-muted-foreground">
-                Start recycling to see your environmental impact!
+                {profile?.co2Saved > 0 
+                  ? `You've saved ${profile.co2Saved} kg of CO₂ emissions!`
+                  : "Start recycling to see your environmental impact!"
+                }
               </p>
             </div>
           </div>
@@ -162,7 +200,7 @@ const Profile = () => {
           transition={{ delay: 0.2 }}
           className="bg-card rounded-2xl mt-4 shadow-card overflow-hidden"
         >
-          {menuItems.map((item, index) => {
+          {menuItems.map((item) => {
             const Icon = item.icon;
             return (
               <button
