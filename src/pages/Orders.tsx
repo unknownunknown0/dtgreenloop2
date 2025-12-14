@@ -1,61 +1,102 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Package, Clock, CheckCircle, XCircle } from "lucide-react";
+import { Package, Clock, CheckCircle, XCircle, Truck, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import AppLayout from "@/components/layout/AppLayout";
+import { format } from "date-fns";
 
-interface Order {
+interface Pickup {
   id: string;
-  status: "pending" | "scheduled" | "completed" | "cancelled";
-  wasteType: string;
-  estimatedWeight: string;
-  pickupDate: string;
-  createdAt: string;
+  status: string;
+  waste_type: string;
+  estimated_weight_kg: number | null;
+  pickup_date: string;
+  pickup_time_slot: string | null;
+  address: string;
+  created_at: string;
 }
 
 const Orders = () => {
   const navigate = useNavigate();
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [pickups, setPickups] = useState<Pickup[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const fetchPickups = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         navigate("/login");
         return;
       }
+
+      const { data, error } = await supabase
+        .from("pickups")
+        .select("*")
+        .eq("user_id", session.user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching pickups:", error);
+      } else {
+        setPickups(data || []);
+      }
       setLoading(false);
     };
 
-    checkAuth();
+    fetchPickups();
+
+    // Real-time subscription
+    const channel = supabase
+      .channel("pickups-changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "pickups" },
+        () => fetchPickups()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [navigate]);
 
-  const getStatusIcon = (status: Order["status"]) => {
+  const getStatusIcon = (status: string) => {
     switch (status) {
       case "pending":
         return <Clock className="text-warning" size={20} />;
-      case "scheduled":
-        return <Package className="text-primary" size={20} />;
+      case "assigned":
+        return <Truck className="text-primary" size={20} />;
+      case "in_progress":
+        return <Package className="text-blue-500" size={20} />;
       case "completed":
         return <CheckCircle className="text-success" size={20} />;
       case "cancelled":
         return <XCircle className="text-destructive" size={20} />;
+      default:
+        return <Clock className="text-muted-foreground" size={20} />;
     }
   };
 
-  const getStatusColor = (status: Order["status"]) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
         return "bg-warning/10 text-warning";
-      case "scheduled":
+      case "assigned":
         return "bg-primary/10 text-primary";
+      case "in_progress":
+        return "bg-blue-500/10 text-blue-500";
       case "completed":
         return "bg-success/10 text-success";
       case "cancelled":
         return "bg-destructive/10 text-destructive";
+      default:
+        return "bg-muted text-muted-foreground";
     }
+  };
+
+  const formatStatus = (status: string) => {
+    return status.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
   };
 
   if (loading) {
@@ -77,7 +118,7 @@ const Orders = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-2xl font-bold text-primary-foreground"
         >
-          My Orders
+          My Pickups
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
@@ -90,8 +131,8 @@ const Orders = () => {
       </header>
 
       {/* Content */}
-      <div className="px-4 -mt-4">
-        {orders.length === 0 ? (
+      <div className="px-4 -mt-4 pb-6">
+        {pickups.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -99,7 +140,7 @@ const Orders = () => {
           >
             <Package className="mx-auto text-muted-foreground mb-4" size={48} />
             <h2 className="text-lg font-semibold text-foreground mb-2">
-              No Orders Yet
+              No Pickups Yet
             </h2>
             <p className="text-muted-foreground text-sm mb-6">
               Schedule your first waste pickup to get started
@@ -117,39 +158,54 @@ const Orders = () => {
             animate={{ opacity: 1 }}
             className="space-y-4"
           >
-            {orders.map((order, index) => (
+            {pickups.map((pickup, index) => (
               <motion.div
-                key={order.id}
+                key={pickup.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 className="bg-card rounded-2xl p-4 shadow-card"
               >
                 <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h3 className="font-semibold text-foreground">
-                      {order.wasteType}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {order.estimatedWeight}
-                    </p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-accent flex items-center justify-center text-2xl">
+                      {pickup.waste_type === "plastics" && "🧴"}
+                      {pickup.waste_type === "e-waste" && "📱"}
+                      {pickup.waste_type === "metals" && "🔧"}
+                      {pickup.waste_type === "organic" && "🍂"}
+                      {pickup.waste_type === "sea-waste" && "🌊"}
+                      {pickup.waste_type === "paper" && "📄"}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground capitalize">
+                        {pickup.waste_type.replace("-", " ")}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {pickup.estimated_weight_kg ? `${pickup.estimated_weight_kg} kg` : "Weight TBD"}
+                      </p>
+                    </div>
                   </div>
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${getStatusColor(
-                      order.status
+                      pickup.status
                     )}`}
                   >
-                    {getStatusIcon(order.status)}
-                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                    {getStatusIcon(pickup.status)}
+                    {formatStatus(pickup.status)}
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    Pickup: {order.pickupDate}
-                  </span>
-                  <button className="text-primary font-medium">
-                    View Details
-                  </button>
+
+                <div className="flex items-center gap-4 text-sm text-muted-foreground pt-3 border-t border-border">
+                  <div className="flex items-center gap-1">
+                    <Calendar size={14} />
+                    {format(new Date(pickup.pickup_date), "MMM d, yyyy")}
+                  </div>
+                  {pickup.pickup_time_slot && (
+                    <div className="flex items-center gap-1">
+                      <Clock size={14} />
+                      {pickup.pickup_time_slot}
+                    </div>
+                  )}
                 </div>
               </motion.div>
             ))}

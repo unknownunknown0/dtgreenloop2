@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 import Orders from "./pages/Orders";
 import Contact from "./pages/Contact";
 import Profile from "./pages/Profile";
+import ProfileEdit from "./pages/ProfileEdit";
 import Scan from "./pages/Scan";
 import PriceList from "./pages/PriceList";
 import Booking from "./pages/Booking";
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/orders" element={<Orders />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/edit" element={<ProfileEdit />} />
           <Route path="/scan" element={<Scan />} />
           <Route path="/price-list" element={<PriceList />} />
           <Route path="/booking" element={<Booking />} />
@@ -46,6 +48,11 @@ const App = () => (
           <Route path="/billing" element={<Billing />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/delivery" element={<DeliveryPartnerDashboard />} />
+          <Route path="/rewards" element={<NotFound />} />
+          <Route path="/notifications" element={<NotFound />} />
+          <Route path="/addresses" element={<NotFound />} />
+          <Route path="/privacy" element={<NotFound />} />
+          <Route path="/settings" element={<NotFound />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
