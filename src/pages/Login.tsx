@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import greenLoopLogo from "@/assets/green-loop-logo.jpg";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -76,14 +77,20 @@ const Login = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header Section */}
-      <div className="gradient-hero pt-16 pb-24 px-6 safe-top">
+      <div className="gradient-hero pt-10 pb-24 px-6 safe-top">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
+          className="flex flex-col items-center"
         >
-          <h1 className="text-3xl font-semibold text-primary-foreground">Hello,</h1>
-          <h2 className="text-3xl font-bold text-primary-foreground">Welcome back !</h2>
+          <img 
+            src={greenLoopLogo} 
+            alt="Green Loop Logo" 
+            className="w-24 h-24 object-contain rounded-xl mb-4"
+          />
+          <h1 className="text-2xl font-semibold text-primary-foreground">Hello,</h1>
+          <h2 className="text-2xl font-bold text-primary-foreground">Welcome to Green Loop!</h2>
         </motion.div>
       </div>
 

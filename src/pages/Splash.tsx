@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronUp } from "lucide-react";
-import RecycleIcon from "@/components/icons/RecycleIcon";
+import greenLoopLogo from "@/assets/green-loop-logo.jpg";
 
 const Splash = () => {
   const navigate = useNavigate();
@@ -28,9 +28,13 @@ const Splash = () => {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="bg-card rounded-3xl p-8 shadow-xl"
+          className="bg-card rounded-3xl p-4 shadow-xl"
         >
-          <RecycleIcon size={140} animate={false} />
+          <img 
+            src={greenLoopLogo} 
+            alt="Green Loop Logo" 
+            className="w-40 h-40 object-contain rounded-2xl"
+          />
         </motion.div>
       </div>
 
