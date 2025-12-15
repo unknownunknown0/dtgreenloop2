@@ -21,6 +21,11 @@ import Billing from "./pages/Billing";
 import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/AdminDashboard";
 import DeliveryPartnerDashboard from "./pages/DeliveryPartnerDashboard";
+import Rewards from "./pages/Rewards";
+import Notifications from "./pages/Notifications";
+import Addresses from "./pages/Addresses";
+import Privacy from "./pages/Privacy";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -48,11 +53,11 @@ const App = () => (
           <Route path="/billing" element={<Billing />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/delivery" element={<DeliveryPartnerDashboard />} />
-          <Route path="/rewards" element={<NotFound />} />
-          <Route path="/notifications" element={<NotFound />} />
-          <Route path="/addresses" element={<NotFound />} />
-          <Route path="/privacy" element={<NotFound />} />
-          <Route path="/settings" element={<NotFound />} />
+          <Route path="/rewards" element={<Rewards />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/addresses" element={<Addresses />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
