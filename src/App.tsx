@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Splash from "./pages/Splash";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import AdminLogin from "./pages/AdminLogin";
+import DeliveryLogin from "./pages/DeliveryLogin";
 import Home from "./pages/Home";
 import Orders from "./pages/Orders";
 import Contact from "./pages/Contact";
@@ -39,6 +41,8 @@ const App = () => (
           <Route path="/" element={<Splash />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/delivery-login" element={<DeliveryLogin />} />
           <Route path="/home" element={<Home />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/contact" element={<Contact />} />
