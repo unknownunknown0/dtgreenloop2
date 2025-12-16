@@ -171,11 +171,25 @@ const Login = () => {
           </Link>
         </form>
 
-        {/* Info Note */}
-        <div className="mt-6 p-4 bg-accent/50 rounded-xl">
-          <p className="text-xs text-muted-foreground text-center">
-            Create an account to get started. Your role will be assigned automatically.
-          </p>
+        {/* Role-based Login Options */}
+        <div className="mt-6 space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="flex-1 h-px bg-border" />
+            <span className="text-xs text-muted-foreground">Other Login Options</span>
+            <div className="flex-1 h-px bg-border" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Link to="/admin-login">
+              <button type="button" className="w-full py-3 px-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm font-medium rounded-xl hover:shadow-lg transition-all">
+                Admin Login
+              </button>
+            </Link>
+            <Link to="/delivery-login">
+              <button type="button" className="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-medium rounded-xl hover:shadow-lg transition-all">
+                Partner Login
+              </button>
+            </Link>
+          </div>
         </div>
       </motion.div>
     </div>
