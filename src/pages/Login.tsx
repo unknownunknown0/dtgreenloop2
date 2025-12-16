@@ -171,25 +171,11 @@ const Login = () => {
           </Link>
         </form>
 
-        {/* Test Credentials */}
+        {/* Info Note */}
         <div className="mt-6 p-4 bg-accent/50 rounded-xl">
-          <p className="text-xs text-muted-foreground text-center mb-3 font-medium">
-            Test Credentials
+          <p className="text-xs text-muted-foreground text-center">
+            Create an account to get started. Your role will be assigned automatically.
           </p>
-          <div className="space-y-2 text-xs">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Admin:</span>
-              <span className="text-foreground font-mono">admin@greenloop.com / admin123</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Delivery:</span>
-              <span className="text-foreground font-mono">driver@greenloop.com / driver123</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">User:</span>
-              <span className="text-foreground font-mono">test@test.com / test123</span>
-            </div>
-          </div>
         </div>
       </motion.div>
     </div>
