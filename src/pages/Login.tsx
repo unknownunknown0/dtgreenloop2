@@ -179,7 +179,7 @@ const Login = () => {
             <div className="flex-1 h-px bg-border" />
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <a href="https://admindtgreenloop.lovable.app">
+            <a href="https://dtadmingreenloop.lovable.app">
               <button
                 type="button"
                 className="w-full py-3 px-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm font-medium rounded-xl hover:shadow-lg transition-all"
