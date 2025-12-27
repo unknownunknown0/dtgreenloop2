@@ -187,11 +187,14 @@ const Login = () => {
                 Admin Login
               </button>
             </a>
-            <Link to="/delivery-login">
-              <button type="button" className="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-medium rounded-xl hover:shadow-lg transition-all">
+            <a href="https://delivery.greenloop.com">
+              <button
+                type="button"
+                className="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-medium rounded-xl hover:shadow-lg transition-all"
+              >
                 Partner Login
               </button>
-            </Link>
+            </a>
           </div>
         </div>
       </motion.div>
