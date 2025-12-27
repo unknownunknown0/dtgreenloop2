@@ -187,7 +187,7 @@ const Login = () => {
                 Admin Login
               </button>
             </a>
-            <a href="https://delivery.greenloop.com">
+            <a href="https://dtdeliverygreenloop.lovable.app">
               <button
                 type="button"
                 className="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-medium rounded-xl hover:shadow-lg transition-all"
