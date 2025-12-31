@@ -40,9 +40,9 @@ const Contact = () => {
   };
 
   const contactInfo = [
-    { icon: Phone, label: "Phone", value: "+1 (555) 123-4567" },
-    { icon: Mail, label: "Email", value: "support@ecorecycle.com" },
-    { icon: MapPin, label: "Address", value: "123 Green Street, Eco City" },
+    { icon: Phone, label: "Phone", value: "+91 9876543210" },
+    { icon: Mail, label: "Email", value: "support@greenloop.com" },
+    { icon: MapPin, label: "Address", value: "123 Green Street, Saravanapatti" },
   ];
 
   return (
